@@ -119,3 +119,4 @@ room = { id = "androidx.room", version.ref = "room" }
 androidDynamicFeature = { id = "com.android.dynamic-feature", version.ref = "agp" }
 mapsplatform-secrets-plugin = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secretsPlugin"}
 run-tracker-android-application = { id = "run.tracker.android.application", version = "unspecified" }
+run-tracker-android-application-compose = { id = "run.tracker.android.application.compose", version = "unspecified" }
