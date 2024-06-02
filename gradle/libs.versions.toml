@@ -123,6 +123,8 @@ run-tracker-android-application-compose = { id = "run.tracker.android.applicatio
 run-tracker-android-library = { id = "run.tracker.android.library", version = "unspecified" }
 run-tracker-android-library-compose = { id = "run.tracker.android.library.compose", version = "unspecified" }
 run-tracker-android-feature-ui = { id = "run.tracker.android.feature.ui", version = "unspecified" }
+run-tracker-android-room = { id = "run.tracker.android.room", version = "unspecified" }
+run-tracker-jvm-library = { id = "run.tracker.jvm.library", version = "unspecified" }
 
 [bundles]
 compose = [
