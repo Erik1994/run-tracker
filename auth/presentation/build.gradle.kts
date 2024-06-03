@@ -7,6 +7,6 @@ android {
 }
 
 dependencies {
-    implementation(platform(projects.auth.domain))
-    implementation(platform(projects.core.domain))
+    implementation(projects.auth.domain)
+    implementation(projects.core.domain)
 }
