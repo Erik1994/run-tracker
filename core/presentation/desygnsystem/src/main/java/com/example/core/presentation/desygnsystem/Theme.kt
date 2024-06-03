@@ -1,30 +1,27 @@
 package com.example.core.presentation.desygnsystem
 
 import android.app.Activity
-import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.example.core.presentation.desygnsystem.dimentions.LocalSpacing
+import com.example.core.presentation.desygnsystem.dimentions.Spacing
 
 val DarkColorScheme = darkColorScheme(
-    primary = RunTrackerGreen,
-    background = RunTrackerBlack,
-    surface = RunTrackerDarkGray,
-    secondaryContainer = RunTrackerWhite,
-    tertiary = RunTrackerWhite,
-    primaryContainer = RunTrackerGreen30,
-    onPrimary = RunTrackerBlack,
-    onBackground = RunTrackerWhite,
-    onSurface = RunTrackerWhite,
-    onSurfaceVariant = RunTrackerGray
+    primary = RunnersGreen,
+    background = RunnersBlack,
+    surface = RunnersDarkGray,
+    secondaryContainer = RunnersWhite,
+    tertiary = RunnersWhite,
+    primaryContainer = RunnersGreen30,
+    onPrimary = RunnersBlack,
+    onBackground = RunnersWhite,
+    onSurface = RunnersWhite,
+    onSurfaceVariant = RunnersGray
 )
 
 @Composable
@@ -39,9 +36,11 @@ fun RunTrackerTheme(
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false
         }
     }
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
+    CompositionLocalProvider(LocalSpacing provides Spacing()) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = Typography,
+            content = content
+        )
+    }
 }
