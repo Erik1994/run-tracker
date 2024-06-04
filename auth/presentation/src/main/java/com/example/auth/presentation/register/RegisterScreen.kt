@@ -28,6 +28,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import com.example.auth.domain.UserDataValidator
 import com.example.auth.presentation.R
 import com.example.core.presentation.desygnsystem.CheckIcon
 import com.example.core.presentation.desygnsystem.CrossIcon
@@ -123,7 +124,10 @@ fun RegisterScreen(
             )
             Spacer(modifier = Modifier.height(spacing.dimenMedium))
             PasswordRequirement(
-                text = stringResource(id = R.string.at_least_x_characters),
+                text = stringResource(
+                    id = R.string.at_least_x_characters,
+                    UserDataValidator.MIN_PASSWORD_LENGTH
+                ),
                 isValid = state.passwordValidationState.hasMinLength
             )
             Spacer(modifier = Modifier.height(spacing.dimenMedium))
