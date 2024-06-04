@@ -20,17 +20,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.auth.presentation.R
 import com.example.core.presentation.desygnsystem.LogoIcon
-import com.example.core.presentation.desygnsystem.RunTrackerTheme
+import com.example.core.presentation.desygnsystem.RunnersTheme
 import com.example.core.presentation.desygnsystem.components.GradientBackground
 import com.example.core.presentation.desygnsystem.components.RunnersActionButton
 import com.example.core.presentation.desygnsystem.components.RunnersOutlinedActionButton
-import com.example.core.presentation.desygnsystem.dimentions.LocalSpacing
+import com.example.core.presentation.desygnsystem.dimentions.LocalDimensions
 
 @Composable
 fun IntroScreen(
     onAction: (IntroAction) -> Unit
 ) {
-    val spacing = LocalSpacing.current
+    val spacing = LocalDimensions.current
     GradientBackground {
         Box(
             modifier = Modifier
@@ -43,20 +43,20 @@ fun IntroScreen(
         Column (
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(spacing.spaceMedium)
-                .padding(bottom = spacing.spaceMediumLarge)
+                .padding(spacing.dimenMedium)
+                .padding(bottom = spacing.dimenMediumLarge)
         ) {
             Text(
                 text = stringResource(id = R.string.welcome_to_runners),
                 color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 20.sp
             )
-            Spacer(modifier = Modifier.height(spacing.spaceSmall))
+            Spacer(modifier = Modifier.height(spacing.dimenSmall))
             Text(
                 text = stringResource(id = R.string.runners_description),
                 style = MaterialTheme.typography.bodySmall
             )
-            Spacer(modifier = Modifier.height(spacing.spaceLarge))
+            Spacer(modifier = Modifier.height(spacing.dimenLarge))
             RunnersOutlinedActionButton(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -66,7 +66,7 @@ fun IntroScreen(
                     onAction(IntroAction.OnSingInClick)
                 }
             )
-            Spacer(modifier = Modifier.height(spacing.spaceMedium))
+            Spacer(modifier = Modifier.height(spacing.dimenMedium))
             RunnersActionButton(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -106,7 +106,7 @@ private fun RunnersLogoVertical(
 @Preview
 @Composable
 private fun IntroScreenPreview() {
-    RunTrackerTheme {
+    RunnersTheme {
         IntroScreen(
             onAction = {}
         )

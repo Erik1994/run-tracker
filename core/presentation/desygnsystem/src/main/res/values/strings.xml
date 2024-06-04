@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="password_locked_icon">Password locked icon</string>
+    <string name="show_password">Show password</string>
+    <string name="hide_passowrd">Hide password\n</string>
+    <string name="email_start_icon">Email start icon</string>
+    <string name="email_end_icon">Email end icon</string>
+</resources>

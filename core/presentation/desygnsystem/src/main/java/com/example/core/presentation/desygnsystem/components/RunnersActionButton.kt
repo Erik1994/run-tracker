@@ -22,7 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.core.presentation.desygnsystem.RunnersBlack
 import com.example.core.presentation.desygnsystem.RunnersGray
-import com.example.core.presentation.desygnsystem.dimentions.LocalSpacing
+import com.example.core.presentation.desygnsystem.dimentions.LocalDimensions
 
 @Composable
 fun RunnersActionButton(
@@ -32,7 +32,7 @@ fun RunnersActionButton(
     enabled: Boolean = true,
     onClick: () -> Unit
 ) {
-    val spacing = LocalSpacing.current
+    val spacing = LocalDimensions.current
     Button(
         onClick = onClick,
         enabled = enabled,
@@ -49,7 +49,7 @@ fun RunnersActionButton(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = spacing.spaceSmall),
+                .padding(vertical = spacing.dimenSmall),
             contentAlignment = Alignment.Center
         ) {
             CircularProgressIndicator(
@@ -77,7 +77,7 @@ fun RunnersOutlinedActionButton(
     enabled: Boolean = true,
     onClick: () -> Unit
 ) {
-    val spacing = LocalSpacing.current
+    val spacing = LocalDimensions.current
     OutlinedButton(
         onClick = onClick,
         enabled = enabled,
@@ -95,7 +95,7 @@ fun RunnersOutlinedActionButton(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = spacing.spaceSmall),
+                .padding(vertical = spacing.dimenSmall),
             contentAlignment = Alignment.Center
         ) {
             CircularProgressIndicator(

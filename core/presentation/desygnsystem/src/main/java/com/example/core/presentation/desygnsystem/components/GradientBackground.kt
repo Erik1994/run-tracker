@@ -1,5 +1,6 @@
 package com.example.core.presentation.desygnsystem.components
 
+import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,7 +17,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.core.presentation.desygnsystem.RunTrackerTheme
+import com.example.core.presentation.desygnsystem.RunnersTheme
 
 @Composable
 fun GradientBackground(
@@ -42,7 +43,7 @@ fun GradientBackground(
 
     val primaryColor = MaterialTheme.colorScheme.primary
 
-    val isAtLeastAndroid12 = true
+    val isAtLeastAndroid12 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
     Box(
         modifier = modifier
@@ -91,7 +92,7 @@ fun GradientBackground(
 @Preview
 @Composable
 fun GradientBackgroundPreview() {
-    RunTrackerTheme {
+    RunnersTheme {
         GradientBackground(
             modifier = Modifier.fillMaxSize()
         ) {
