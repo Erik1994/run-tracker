@@ -37,6 +37,9 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
+    // Koin
+    implementation(libs.bundles.koin)
+
     // Coil
     implementation(libs.coil.compose)
 

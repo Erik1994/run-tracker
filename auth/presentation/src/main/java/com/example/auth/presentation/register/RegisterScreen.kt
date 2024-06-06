@@ -188,7 +188,7 @@ fun PasswordRequirement(
 
 @Preview
 @Composable
-fun RegisterScreenPreview() {
+private fun RegisterScreenPreview() {
     RunnersTheme {
         RegisterScreen(
             state = RegisterState(),

@@ -2,6 +2,7 @@ import com.android.build.api.dsl.LibraryExtension
 import com.example.convention.ExtensionType
 import com.example.convention.configureBuildTypes
 import com.example.convention.configureKotlinAndroid
+import com.example.convention.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
@@ -30,6 +31,7 @@ class AndroidLibraryConventionPlugin: Plugin<Project> {
             }
 
             dependencies {
+                "implementation"(libs.findBundle("koin").get())
                 "testImplementation"(kotlin("test"))
             }
         }

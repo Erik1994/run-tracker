@@ -91,7 +91,7 @@ fun GradientBackground(
 
 @Preview
 @Composable
-fun GradientBackgroundPreview() {
+private fun GradientBackgroundPreview() {
     RunnersTheme {
         GradientBackground(
             modifier = Modifier.fillMaxSize()
