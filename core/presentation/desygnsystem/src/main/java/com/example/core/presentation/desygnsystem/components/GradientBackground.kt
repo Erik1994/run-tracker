@@ -79,8 +79,8 @@ fun GradientBackground(
                 .fillMaxSize()
                 .then(
                     if (hasToolbar) {
-                        Modifier
-                    } else Modifier.systemBarsPadding()
+                        Modifier.systemBarsPadding()
+                    } else Modifier
                 )
         ) {
             content()

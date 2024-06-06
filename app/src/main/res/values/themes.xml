@@ -2,6 +2,6 @@
 <resources>
 
     <style name="Theme.RunTracker" parent="android:Theme.Material.Light.NoActionBar" >
-        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentStatus">false</item>
     </style>
 </resources>

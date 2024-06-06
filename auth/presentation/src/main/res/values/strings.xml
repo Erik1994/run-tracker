@@ -19,4 +19,6 @@
     <string name="register">Register</string>
     <string name="valid_password">Valid password</string>
     <string name="invalid_password">Invalid password</string>
+    <string name="error_email_exists">A user with that email already exists</string>
+    <string name="registration_success">Registration successful! You can log in now.</string>
 </resources>

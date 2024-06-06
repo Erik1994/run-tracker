@@ -1,5 +1,6 @@
 package com.example.runtracker.navigation
 
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -45,6 +46,9 @@ private fun NavGraphBuilder.authGraph(navController: NavHostController) {
                 },
                 onSuccessfulRegistration = { navController.navigate(Route.LOGIN) },
             )
+        }
+        composable(route = Route.LOGIN) {
+            Text(text = "Login Screen!!!")
         }
     }
 }
