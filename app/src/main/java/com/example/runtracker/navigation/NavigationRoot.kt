@@ -73,5 +73,12 @@ private fun NavGraphBuilder.authGraph(navController: NavHostController) {
 }
 
 private fun NavGraphBuilder.runGraph(navController: NavHostController) {
-
+    navigation(
+        startDestination = Route.RUN_OVERVIEW,
+        route = Route.RUN
+    ) {
+        composable(route = Route.RUN_OVERVIEW) {
+            Text(text = "Run Overview!!!")
+        }
+    }
 }
