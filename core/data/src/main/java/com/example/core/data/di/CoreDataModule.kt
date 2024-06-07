@@ -18,13 +18,12 @@ val coreDataModule = module {
     single<CoroutineDispatcher>(named(AppDispatchers.DISPATCHER_IO)) { AppDispatchersImpl.ioDispatcher }
     single<CoroutineDispatcher>(named(AppDispatchers.DISPATCHER_DEFAULT)) { AppDispatchersImpl.defaultDispatcher }
     single<CoroutineDispatcher>(named(AppDispatchers.DISPATCHER_UI)) { AppDispatchersImpl.mainDispatcher }
-
-    singleOf(::HttpClientFactoryImpl).bind<HttpClientFactory>()
-    single<HttpClient> { get<HttpClientFactory>().build() }
     single<SessionStorage> {
         EncryptedSessionStorage(
             sharedPreferences = get(),
             ioDispatcher = get(named(AppDispatchers.DISPATCHER_IO))
         )
     }
+    singleOf(::HttpClientFactoryImpl).bind<HttpClientFactory>()
+    single<HttpClient> { get<HttpClientFactory>().build() }
 }
