@@ -3,7 +3,9 @@ package com.example.runtracker.di
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import com.example.runtracker.MainViewModel
 import org.koin.android.ext.koin.androidApplication
+import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.dsl.module
 
 private const val PREF_NAME = "shared_pref"
@@ -17,4 +19,5 @@ val appModule = module {
             prefValueEncryptionScheme = EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
     }
+    viewModelOf(::MainViewModel)
 }
