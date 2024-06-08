@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="runners">Runners\n</string>
+    <string name="runners">Runners</string>
     <string name="welcome_to_runners">Welcome to Runners</string>
     <string name="runners_description">Track your runs, set goals and achieve fitness milestones with our intuitive app.</string>
     <string name="sign_up">Sign up</string>

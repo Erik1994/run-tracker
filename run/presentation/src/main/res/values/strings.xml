@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="runners">Runners</string>
+    <string name="analytics">Analytics</string>
+    <string name="logut">Logout</string>
+</resources>
