@@ -3,7 +3,7 @@ package com.example.auth.data.repository
 import com.example.auth.data.request.LoginRequest
 import com.example.auth.data.request.RegisterRequest
 import com.example.auth.domain.repository.AuthRepository
-import com.example.auth.response.LoginResponse
+import com.example.auth.data.response.LoginResponse
 import com.example.core.data.network.Endpoint
 import com.example.core.data.network.post
 import com.example.core.domain.auth.AuthInfo

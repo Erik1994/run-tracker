@@ -1,7 +1,6 @@
 package com.example.core.data.network
 
 import com.example.core.data.BuildConfig
-import com.example.core.data.auth.AuthInfoSerializable
 import com.example.core.domain.auth.AuthInfo
 import com.example.core.domain.auth.SessionStorage
 import com.example.core.domain.util.Result

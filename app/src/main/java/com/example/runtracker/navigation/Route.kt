@@ -7,4 +7,5 @@ object Route {
     const val REGISTER = "register"
     const val RUN = "run"
     const val RUN_OVERVIEW = "run_overview"
+    const val RUN_TRACKING = "run_tracking"
 }
