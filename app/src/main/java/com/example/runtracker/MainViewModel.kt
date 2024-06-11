@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.MainState
 import com.example.core.domain.auth.SessionStorage
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

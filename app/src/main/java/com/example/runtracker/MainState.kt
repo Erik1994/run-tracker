@@ -1,4 +1,4 @@
-package com.example
+package com.example.runtracker
 
 data class MainState(
     val isLoggedIn: Boolean = false,

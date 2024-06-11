@@ -4,11 +4,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.run.domain.location.RunningTracker
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
+import timber.log.Timber
 
-class RunTrackingViewModel : ViewModel() {
+class RunTrackingViewModel(
+    private val runningTracker: RunningTracker
+) : ViewModel() {
 
     var state by mutableStateOf(RunTrackingState())
         private set
@@ -18,8 +25,25 @@ class RunTrackingViewModel : ViewModel() {
 
     private val _hasLocationPermission = MutableStateFlow(false)
 
+    init {
+        _hasLocationPermission
+            .onEach { hasPermission ->
+                if (hasPermission) {
+                    runningTracker.stopObservingLocation()
+                } else {
+                    runningTracker.stopObservingLocation()
+                }
+            }.launchIn(viewModelScope)
+
+        runningTracker
+            .currentLocation
+            .onEach { location ->
+                Timber.d("New Location: $location")
+            }.launchIn(viewModelScope)
+    }
+
     fun onAction(action: RunTrackingAction) {
-        when(action) {
+        when (action) {
             RunTrackingAction.OnBackClick -> {}
             RunTrackingAction.OnFinishRunClick -> {}
             RunTrackingAction.OnResumeRunClick -> {}
@@ -28,9 +52,12 @@ class RunTrackingViewModel : ViewModel() {
                 _hasLocationPermission.value = action.acceptedLocationPermission
                 state = state.copy(showLocationRationale = action.showLocationPermissionRationale)
             }
+
             is RunTrackingAction.SubmitNotificationPermissionInfo -> {
-                state = state.copy(showNotificationRationale = action.showNotificationPermissionRationale)
+                state =
+                    state.copy(showNotificationRationale = action.showNotificationPermissionRationale)
             }
+
             RunTrackingAction.DismissRationaleDialog -> {
                 state = state.copy(
                     showNotificationRationale = false,
