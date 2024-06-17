@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.run.domain.location.RunningTracker
+import com.example.run.domain.RunningTracker
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -29,7 +29,7 @@ class RunTrackingViewModel(
         _hasLocationPermission
             .onEach { hasPermission ->
                 if (hasPermission) {
-                    runningTracker.stopObservingLocation()
+                    runningTracker.startObservingLocation()
                 } else {
                     runningTracker.stopObservingLocation()
                 }

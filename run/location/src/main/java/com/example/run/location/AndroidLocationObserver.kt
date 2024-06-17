@@ -5,7 +5,7 @@ import android.location.LocationManager
 import android.os.Looper
 import androidx.core.content.getSystemService
 import com.example.core.domain.location.LocationWithAltitude
-import com.example.run.domain.location.LocationObserver
+import com.example.run.domain.LocationObserver
 import com.example.run.location.mapper.toLocationWithAltitude
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest

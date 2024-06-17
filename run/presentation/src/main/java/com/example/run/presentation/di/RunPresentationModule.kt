@@ -1,7 +1,7 @@
 package com.example.run.presentation.di
 
-import com.example.run.domain.location.RunningTracker
-import com.example.run.domain.location.RunningTrackerImpl
+import com.example.run.domain.RunningTracker
+import com.example.run.domain.RunningTrackerImpl
 import com.example.run.presentation.overview.RunOverviewViewModel
 import com.example.run.presentation.tracking.RunTrackingViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf

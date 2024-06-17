@@ -1,4 +1,4 @@
-package com.example.run.domain.location
+package com.example.run.domain
 
 import com.example.core.domain.location.LocationWithAltitude
 import kotlinx.coroutines.flow.Flow
