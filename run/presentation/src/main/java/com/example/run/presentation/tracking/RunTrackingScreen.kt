@@ -35,6 +35,7 @@ import com.example.core.presentation.desygnsystem.components.toolbar.RunnersTool
 import com.example.core.presentation.desygnsystem.dimentions.LocalDimensions
 import com.example.run.presentation.R
 import com.example.run.presentation.tracking.components.RunDataCard
+import com.example.run.presentation.tracking.maps.TrackerMap
 import com.example.run.presentation.util.hasLocationPermission
 import com.example.run.presentation.util.hasNotificationPermission
 import com.example.run.presentation.util.shouldShowLocationPermissionRationale
@@ -132,6 +133,13 @@ fun RunTrackingScreen(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.surface)
         ) {
+            TrackerMap(
+                isRunFinished = state.isRunFinished,
+                currentLocation = state.currentLocation,
+                locations = state.runData.locations,
+                onSnapshot = {},
+                modifier = Modifier.fillMaxSize()
+            )
             RunDataCard(
                 elapsedTime = state.elapsedTime,
                 runData = state.runData,
