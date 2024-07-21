@@ -1,4 +1,4 @@
-@file:Suppress("OPT_IN_USAGE_FUTURE_ERROR")
+@file:OptIn(ExperimentalFoundationApi::class)
 
 package com.example.auth.presentation.register
 
@@ -35,7 +35,6 @@ import com.example.core.presentation.desygnsystem.CrossIcon
 import com.example.core.presentation.desygnsystem.EmailIcon
 import com.example.core.presentation.desygnsystem.Poppins
 import com.example.core.presentation.desygnsystem.RunnersDarkRed
-import com.example.core.presentation.desygnsystem.RunnersGray
 import com.example.core.presentation.desygnsystem.RunnersGreen
 import com.example.core.presentation.desygnsystem.RunnersTheme
 import com.example.core.presentation.desygnsystem.components.GradientBackground
@@ -44,7 +43,6 @@ import com.example.core.presentation.desygnsystem.components.RunnersPasswordText
 import com.example.core.presentation.desygnsystem.components.RunnersTextField
 import com.example.core.presentation.desygnsystem.dimentions.LocalDimensions
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RegisterScreen(
     state: RegisterState,

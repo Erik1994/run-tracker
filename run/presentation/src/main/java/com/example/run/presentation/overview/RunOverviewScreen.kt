@@ -2,8 +2,6 @@
 
 package com.example.run.presentation.overview
 
-import android.media.tv.TvContract.Channels.Logo
-import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon

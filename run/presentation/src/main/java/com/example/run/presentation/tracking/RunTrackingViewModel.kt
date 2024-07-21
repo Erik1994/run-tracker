@@ -106,8 +106,7 @@ class RunTrackingViewModel(
             }
 
             is RunTrackingAction.SubmitNotificationPermissionInfo -> {
-                state =
-                    state.copy(showNotificationRationale = action.showNotificationPermissionRationale)
+                state = state.copy(showNotificationRationale = action.showNotificationPermissionRationale)
             }
 
             RunTrackingAction.DismissRationaleDialog -> {
