@@ -90,7 +90,6 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 google-maps-android-compose = { module = "com.google.maps.android:maps-compose", version.ref = "maps" }
 google-android-gms-play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "gmsLocation"}
 org-mongodb-bson = { module = "org.mongodb:bson", version.ref = "bson" }

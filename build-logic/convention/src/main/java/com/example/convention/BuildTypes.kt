@@ -66,7 +66,7 @@ private fun BuildType.configureDebugBuildType(apiKey: String) {
     )
     buildConfigField(
         type = "String",
-        name = "BASE_URL",
+        name = BASE_URL,
         value = "\"https://runique.pl-coding.com:8080\""
     )
 }
@@ -82,7 +82,7 @@ private fun BuildType.configureReleaseBuildType(
     )
     buildConfigField(
         type = "String",
-        name = "BASE_URL",
+        name = BASE_URL,
         value = "\"https://runique.pl-coding.com:8080\""
     )
 
@@ -94,3 +94,4 @@ private fun BuildType.configureReleaseBuildType(
 }
 
 private const val API_KEY = "API_KEY"
+private const val BASE_URL = "BASE_URL"
