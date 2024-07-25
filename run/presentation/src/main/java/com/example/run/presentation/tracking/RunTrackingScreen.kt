@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.example.core.presentation.desygnsystem.RunnersTheme
 import com.example.core.presentation.desygnsystem.StartIcon
 import com.example.core.presentation.desygnsystem.StopIcon
+import com.example.core.presentation.desygnsystem.components.RunnersActionButton
 import com.example.core.presentation.desygnsystem.components.RunnersDialog
 import com.example.core.presentation.desygnsystem.components.RunnersFAB
 import com.example.core.presentation.desygnsystem.components.RunnersOutlinedActionButton
@@ -155,6 +156,34 @@ fun RunTrackingScreen(
         }
     }
 
+    if (state.shouldTrack.not() && state.hasStartedRunning) {
+        RunnersDialog(
+            title = stringResource(id = R.string.running_is_paused),
+            onDismiss = { onAction(RunTrackingAction.OnResumeRunClick) },
+            description = stringResource(id = R.string.resume_or_finish_run),
+            primaryButton = {
+                RunnersActionButton(
+                    text = stringResource(id = R.string.resume),
+                    isLoading = false,
+                    onClick = {
+                        onAction(RunTrackingAction.OnResumeRunClick)
+                    },
+                    modifier = Modifier.weight(1f)
+                )
+            },
+            secondaryButton = {
+                RunnersOutlinedActionButton(
+                    text = stringResource(id = R.string.finish),
+                    isLoading = state.isSavingRun,
+                    onClick =  {
+                        onAction(RunTrackingAction.OnFinishRunClick)
+                    },
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        )
+    }
+
     if (state.showLocationRationale || state.showNotificationRationale) {
         RunnersDialog(
             title = stringResource(id = R.string.permission_required),
@@ -200,6 +229,7 @@ private fun ActivityResultLauncher<Array<String>>.requestRunnersPermissions(
         hasLocationPermission.not() && hasNotificationPermission.not() -> launch(
             locationPermissions + notificationPermission
         )
+
         hasLocationPermission.not() -> launch(locationPermissions)
         hasNotificationPermission.not() -> launch(notificationPermission)
     }
