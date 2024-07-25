@@ -1,8 +1,11 @@
 package com.example.run.location
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Looper
+import androidx.core.app.ActivityCompat
 import androidx.core.content.getSystemService
 import com.example.core.domain.location.LocationWithAltitude
 import com.example.run.domain.LocationObserver
@@ -29,15 +32,26 @@ class AndroidLocationObserver(
             var isGpsEnabled = false
             var isNetworkEnabled = false
 
-            while (!isGpsEnabled && !isNetworkEnabled) {
+            while (isGpsEnabled.not() && isNetworkEnabled.not()) {
                 isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
                 isNetworkEnabled =
                     locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
 
-                if (!isGpsEnabled && !isNetworkEnabled) {
-                    delay(3000)
+                if (isGpsEnabled.not() && isNetworkEnabled.not()) {
+                    delay(3000L)
                 }
+            }
 
+            if (ActivityCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                close()
+            } else {
                 client.lastLocation.addOnSuccessListener {
                     it?.let {
                         trySend(it.toLocationWithAltitude())

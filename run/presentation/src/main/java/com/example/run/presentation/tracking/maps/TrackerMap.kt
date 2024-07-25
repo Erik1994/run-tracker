@@ -63,13 +63,13 @@ fun TrackerMap(
     }
 
     LaunchedEffect(key1 = markerPosition, isRunFinished) {
-        if (!isRunFinished) {
+        if (isRunFinished.not()) {
             markerState.position = markerPosition
         }
     }
 
     LaunchedEffect(key1 = currentLocation, isRunFinished) {
-        if (currentLocation != null && !isRunFinished) {
+        if (currentLocation != null && isRunFinished.not()) {
             val latLong = LatLng(currentLocation.lat, currentLocation.long)
             cameraPositionState.animate(
                 CameraUpdateFactory.newLatLngZoom(latLong, 17f)
@@ -86,7 +86,7 @@ fun TrackerMap(
             zoomControlsEnabled = false
         )
     ) {
-        if (!isRunFinished && currentLocation != null) {
+        if (isRunFinished.not() && currentLocation != null) {
             MarkerComposable(
                 currentLocation,
                 state = markerState
@@ -108,5 +108,4 @@ fun TrackerMap(
             }
         }
     }
-
 }

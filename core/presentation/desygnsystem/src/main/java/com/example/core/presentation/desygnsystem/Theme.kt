@@ -34,6 +34,7 @@ fun RunnersTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
+            // Icons in status bar will be shown as light icons
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false
         }
     }

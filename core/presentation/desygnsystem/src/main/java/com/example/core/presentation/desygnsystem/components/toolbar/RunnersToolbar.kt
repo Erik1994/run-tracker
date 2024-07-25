@@ -113,9 +113,7 @@ fun RunnersToolbar(
                     IconButton(onClick = { isDropDownOpen = true }) {
                         Icon(
                             imageVector = Icons.Default.MoreVert,
-                            contentDescription = stringResource(
-                                id = R.string.open_menu
-                            ),
+                            contentDescription = stringResource(id = R.string.open_menu),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }

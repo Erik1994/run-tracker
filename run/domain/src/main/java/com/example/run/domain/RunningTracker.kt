@@ -1,5 +1,6 @@
 @file:OptIn(
     ExperimentalCoroutinesApi::class, ExperimentalCoroutinesApi::class,
+    ExperimentalCoroutinesApi::class, ExperimentalCoroutinesApi::class,
     ExperimentalCoroutinesApi::class
 )
 
@@ -10,7 +11,6 @@ import com.example.core.domain.location.LocationTimeStamp
 import com.example.core.domain.location.LocationWithAltitude
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -30,7 +30,7 @@ import kotlin.time.Duration.Companion.seconds
 
 interface RunningTracker {
 
-    val currentLocation: Flow<LocationWithAltitude?>
+    val currentLocation: StateFlow<LocationWithAltitude?>
 
     val runData: StateFlow<RunData>
 
