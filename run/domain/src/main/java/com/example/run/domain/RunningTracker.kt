@@ -1,6 +1,4 @@
 @file:OptIn(
-    ExperimentalCoroutinesApi::class, ExperimentalCoroutinesApi::class,
-    ExperimentalCoroutinesApi::class, ExperimentalCoroutinesApi::class,
     ExperimentalCoroutinesApi::class
 )
 
@@ -29,15 +27,13 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 interface RunningTracker {
-
     val currentLocation: StateFlow<LocationWithAltitude?>
-
     val runData: StateFlow<RunData>
-
+    val isTracking: StateFlow<Boolean>
     val elapsedTime: StateFlow<Duration>
+
     fun startObservingLocation()
     fun stopObservingLocation()
-
     fun setIsTracking(isTracking: Boolean)
 }
 
@@ -49,7 +45,8 @@ class RunningTrackerImpl(
     private val _ranData = MutableStateFlow(RunData())
     override val runData = _ranData.asStateFlow()
 
-    private val isTracking = MutableStateFlow(false)
+    private val _isTracking = MutableStateFlow(false)
+    override val isTracking = _isTracking.asStateFlow()
     private val isObservingLocation = MutableStateFlow(false)
 
     private val _elapsedTime = MutableStateFlow(Duration.ZERO)
@@ -129,7 +126,7 @@ class RunningTrackerImpl(
     }
 
     override fun setIsTracking(isTracking: Boolean) {
-        this.isTracking.value = isTracking
+        this._isTracking.value = isTracking
     }
     override fun startObservingLocation() {
         isObservingLocation.value = true

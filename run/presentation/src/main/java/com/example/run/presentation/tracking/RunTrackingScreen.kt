@@ -36,6 +36,7 @@ import com.example.core.presentation.desygnsystem.dimentions.LocalDimensions
 import com.example.run.presentation.R
 import com.example.run.presentation.tracking.components.RunDataCard
 import com.example.run.presentation.tracking.maps.TrackerMap
+import com.example.run.presentation.tracking.service.RunTrackingService
 import com.example.run.presentation.util.hasLocationPermission
 import com.example.run.presentation.util.hasNotificationPermission
 import com.example.run.presentation.util.shouldShowLocationPermissionRationale
@@ -44,6 +45,7 @@ import com.example.run.presentation.util.shouldShowNotificationPermissionRationa
 @Composable
 fun RunTrackingScreen(
     state: RunTrackingState,
+    onServiceToggle: (RunTrackingService.RunTrackingServiceState) -> Unit,
     onAction: (RunTrackingAction) -> Unit
 ) {
     val dimensions = LocalDimensions.current
@@ -106,6 +108,19 @@ fun RunTrackingScreen(
 
         if (showLocationRationale.not() && showNotificationRationale.not()) {
             permissionLauncher.requestRunnersPermissions(context)
+        }
+    }
+
+    LaunchedEffect(key1 = state.shouldTrack) {
+        if (context.hasLocationPermission() && state.shouldTrack && RunTrackingService.isServiceActive.not()) {
+            onServiceToggle(RunTrackingService.RunTrackingServiceState.START)
+        }
+    }
+
+
+    LaunchedEffect(key1 = state.isRunFinished) {
+        if (state.isRunFinished) {
+            onServiceToggle(RunTrackingService.RunTrackingServiceState.STOP)
         }
     }
 
@@ -242,6 +257,7 @@ fun RunTrackingScreenPreview() {
     RunnersTheme {
         RunTrackingScreen(
             state = RunTrackingState(),
+            onServiceToggle = {},
             onAction = {}
         )
     }

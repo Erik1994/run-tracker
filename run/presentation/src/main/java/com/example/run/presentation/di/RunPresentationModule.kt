@@ -11,6 +11,7 @@ import org.koin.dsl.module
 
 val runsPresentationModule = module {
     singleOf(::RunningTrackerImpl).bind<RunningTracker>()
+
     viewModelOf(::RunOverviewViewModel)
     viewModelOf(::RunTrackingViewModel)
 }

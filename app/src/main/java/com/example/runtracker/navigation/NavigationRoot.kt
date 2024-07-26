@@ -1,16 +1,21 @@
 package com.example.runtracker.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import androidx.navigation.navDeepLink
 import com.example.auth.presentation.intro.IntroScreenRoot
 import com.example.auth.presentation.login.LoginScreenRoot
 import com.example.auth.presentation.register.RegisterScreenRoot
 import com.example.run.presentation.overview.RunOverviewScreenRoot
 import com.example.run.presentation.tracking.RunTrackingScreenRoot
+import com.example.run.presentation.tracking.service.RunTrackingService
+import com.example.run.presentation.tracking.service.RunTrackingService.Companion.RUNNERS_DEEP_LINK
+import com.example.runtracker.MainActivity
 
 @Composable
 fun NavigationRoot(
@@ -84,8 +89,31 @@ private fun NavGraphBuilder.runGraph(navController: NavHostController) {
                 navController.navigate(Route.RUN_TRACKING)
             })
         }
-        composable(route = Route.RUN_TRACKING) {
-            RunTrackingScreenRoot()
+        composable(
+            route = Route.RUN_TRACKING,
+            deepLinks = listOf(
+                navDeepLink {
+                    uriPattern = RUNNERS_DEEP_LINK
+                }
+            )
+        ) {
+            val context = LocalContext.current
+            RunTrackingScreenRoot(
+                onServiceToggle = {
+                    when (it) {
+                        RunTrackingService.RunTrackingServiceState.START -> context.startService(
+                            RunTrackingService.createStartIntent(
+                                context = context,
+                                activityClass = MainActivity::class.java
+                            )
+                        )
+
+                        RunTrackingService.RunTrackingServiceState.STOP -> context.startService(
+                            RunTrackingService.createStopIntent(context = context)
+                        )
+                    }
+                }
+            )
         }
     }
 }

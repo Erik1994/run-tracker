@@ -7,6 +7,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.run.domain.RunningTracker
+import com.example.run.presentation.tracking.service.RunTrackingService
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,7 +21,12 @@ class RunTrackingViewModel(
     private val runningTracker: RunningTracker
 ) : ViewModel() {
 
-    var state by mutableStateOf(RunTrackingState())
+    var state by mutableStateOf(
+        RunTrackingState(
+            shouldTrack = RunTrackingService.isServiceActive && runningTracker.isTracking.value,
+            hasStartedRunning = RunTrackingService.isServiceActive
+        )
+    )
         private set
 
     private val eventChannel = Channel<RunTrackingEvent>()
@@ -86,27 +92,32 @@ class RunTrackingViewModel(
                     shouldTrack = false
                 )
             }
+
             RunTrackingAction.OnFinishRunClick -> {
 
             }
+
             RunTrackingAction.OnResumeRunClick -> {
                 state = state.copy(
                     shouldTrack = true
                 )
             }
+
             RunTrackingAction.OnToggleRunClick -> {
                 state = state.copy(
                     hasStartedRunning = true,
                     shouldTrack = state.shouldTrack.not()
                 )
             }
+
             is RunTrackingAction.SubmitLocationPermissionInfo -> {
                 hasLocationPermission.value = action.acceptedLocationPermission
                 state = state.copy(showLocationRationale = action.showLocationPermissionRationale)
             }
 
             is RunTrackingAction.SubmitNotificationPermissionInfo -> {
-                state = state.copy(showNotificationRationale = action.showNotificationPermissionRationale)
+                state =
+                    state.copy(showNotificationRationale = action.showNotificationPermissionRationale)
             }
 
             RunTrackingAction.DismissRationaleDialog -> {
@@ -115,6 +126,13 @@ class RunTrackingViewModel(
                     showLocationRationale = false
                 )
             }
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        if (RunTrackingService.isServiceActive.not()) {
+            runningTracker.stopObservingLocation()
         }
     }
 }
