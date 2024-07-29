@@ -3,6 +3,7 @@ package com.example.runtracker.di
 import com.example.auth.data.di.authDataModule
 import com.example.auth.presentation.di.authPresentationModule
 import com.example.core.data.di.coreDataModule
+import com.example.core.database.di.databaseModule
 import com.example.run.location.di.locationModule
 import com.example.run.presentation.di.runsPresentationModule
 
@@ -13,6 +14,7 @@ object Modules {
         authDataModule,
         authPresentationModule,
         runsPresentationModule,
-        locationModule
+        locationModule,
+        databaseModule
     )
 }
