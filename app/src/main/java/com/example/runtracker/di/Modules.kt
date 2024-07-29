@@ -5,6 +5,7 @@ import com.example.auth.presentation.di.authPresentationModule
 import com.example.core.data.di.coreDataModule
 import com.example.core.database.di.databaseModule
 import com.example.run.location.di.locationModule
+import com.example.run.network.di.networkModule
 import com.example.run.presentation.di.runsPresentationModule
 
 object Modules {
@@ -15,6 +16,7 @@ object Modules {
         authPresentationModule,
         runsPresentationModule,
         locationModule,
-        databaseModule
+        databaseModule,
+        networkModule
     )
 }

@@ -12,7 +12,7 @@ import com.example.core.domain.util.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class RoomLocalDataSource(
+class RoomLocalRunDataSource(
     private val runDao: RunDao
 ): LocalRunDataSource {
 

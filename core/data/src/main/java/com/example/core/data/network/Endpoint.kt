@@ -6,6 +6,8 @@ sealed class Endpoint(val url: String) {
 
     data object Login : Endpoint("$BASE_URL/login")
     data object Register: Endpoint("$BASE_URL/register")
+    data object Runs: Endpoint("$BASE_URL/runs")
+    data object Run: Endpoint("$BASE_URL/run")
 
     data object AccessToken: Endpoint("$BASE_URL/accessToken")
 

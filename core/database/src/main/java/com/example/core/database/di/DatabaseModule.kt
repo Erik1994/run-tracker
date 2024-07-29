@@ -1,7 +1,7 @@
 package com.example.core.database.di
 
 import androidx.room.Room
-import com.example.core.database.RoomLocalDataSource
+import com.example.core.database.RoomLocalRunDataSource
 import com.example.core.database.RunDatabase
 import com.example.core.domain.run.LocalRunDataSource
 import org.koin.android.ext.koin.androidApplication
@@ -19,5 +19,5 @@ val databaseModule = module {
     }
 
     single { get<RunDatabase>().runDao }
-    singleOf(::RoomLocalDataSource).bind<LocalRunDataSource>()
+    singleOf(::RoomLocalRunDataSource).bind<LocalRunDataSource>()
 }
