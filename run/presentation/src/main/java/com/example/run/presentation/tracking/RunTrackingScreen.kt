@@ -4,7 +4,6 @@ package com.example.run.presentation.tracking
 
 import android.Manifest
 import android.content.Context
-import android.graphics.Bitmap
 import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -42,7 +41,6 @@ import com.example.run.presentation.util.hasLocationPermission
 import com.example.run.presentation.util.hasNotificationPermission
 import com.example.run.presentation.util.shouldShowLocationPermissionRationale
 import com.example.run.presentation.util.shouldShowNotificationPermissionRationale
-import java.io.ByteArrayOutputStream
 
 @Composable
 fun RunTrackingScreen(
@@ -160,15 +158,7 @@ fun RunTrackingScreen(
                 currentLocation = state.currentLocation,
                 locations = state.runData.locations,
                 onSnapshot = { bitmap ->
-                    val stream = ByteArrayOutputStream()
-                    stream.use {
-                        bitmap.compress(
-                            Bitmap.CompressFormat.JPEG,
-                            80,
-                            it
-                        )
-                    }
-                    onAction(RunTrackingAction.OnRunProcessed(stream.toByteArray()))
+                    onAction(RunTrackingAction.OnRunProcessed(bitmap))
                 },
                 modifier = Modifier.fillMaxSize()
             )

@@ -1,5 +1,7 @@
 package com.example.run.presentation.tracking
 
+import android.graphics.Bitmap
+
 sealed interface RunTrackingAction {
 
     data object OnToggleRunClick : RunTrackingAction
@@ -22,6 +24,6 @@ sealed interface RunTrackingAction {
 
     data object DismissRationaleDialog : RunTrackingAction
 
-    class OnRunProcessed(val mapPictureBytes: ByteArray) : RunTrackingAction
+    class OnRunProcessed(val bitmap: Bitmap) : RunTrackingAction
 
 }

@@ -1,11 +1,13 @@
 package com.example.run.presentation.tracking
 
+import android.graphics.Bitmap
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.core.domain.dispatchers.AppDispatchers
 import com.example.core.domain.location.Location
 import com.example.core.domain.run.Run
 import com.example.core.domain.util.Result
@@ -23,12 +25,15 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
 class RunTrackingViewModel(
     private val runningTracker: RunningTracker,
     private val upsertRunUseCase: UpsertRunUseCase,
+    private val appDispatchers: AppDispatchers,
 ) : ViewModel() {
 
     var state by mutableStateOf(
@@ -146,12 +151,12 @@ class RunTrackingViewModel(
             }
 
             is RunTrackingAction.OnRunProcessed -> {
-                finishRun(action.mapPictureBytes)
+                finishRun(action.bitmap)
             }
         }
     }
 
-    private fun finishRun(mapPictureBytes: ByteArray) {
+    private fun finishRun(bitmap: Bitmap) {
         val locations = state.runData.locations
         if (locations.isEmpty() || locations.first().size <= 1) {
             state = state.copy(isSavingRun = false)
@@ -159,6 +164,7 @@ class RunTrackingViewModel(
         }
 
         viewModelScope.launch {
+            val mapPictureBytes = convertBitmapToByteArray(bitmap)
             val run = Run(
                 id = null,
                 duration = state.elapsedTime,
@@ -172,12 +178,26 @@ class RunTrackingViewModel(
             )
             runningTracker.finishRun()
 
-            when(val result = upsertRunUseCase(run = run, mapPicture = mapPictureBytes)) {
+            when (val result = upsertRunUseCase(run = run, mapPicture = mapPictureBytes)) {
                 is Result.Error -> eventChannel.send(RunTrackingEvent.Error(result.error.asUiText()))
                 is Result.Success -> eventChannel.send(RunTrackingEvent.RunSuccessfullySaved)
             }
 
             state = state.copy(isSavingRun = false)
+        }
+    }
+
+    private suspend fun convertBitmapToByteArray(bitmap: Bitmap): ByteArray {
+        return withContext(appDispatchers.ioDispatcher) {
+            val stream = ByteArrayOutputStream()
+            stream.use {
+                bitmap.compress(
+                    Bitmap.CompressFormat.JPEG,
+                    100,
+                    it
+                )
+            }
+            stream.toByteArray()
         }
     }
 
