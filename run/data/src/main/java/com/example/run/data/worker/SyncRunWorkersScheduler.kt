@@ -1,0 +1,156 @@
+package com.example.run.data.worker
+
+import android.content.Context
+import androidx.work.BackoffPolicy
+import androidx.work.Constraints
+import androidx.work.Data
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.await
+import com.example.core.database.dao.RunPendingSyncDao
+import com.example.core.database.entity.DeletedRunSyncEntity
+import com.example.core.database.entity.RunPendingSyncEntity
+import com.example.core.database.mapper.toRunEntity
+import com.example.core.domain.auth.SessionStorage
+import com.example.core.domain.dispatchers.AppDispatchers
+import com.example.core.domain.run.Run
+import com.example.core.domain.run.RunId
+import com.example.core.domain.run.SyncRunScheduler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.concurrent.TimeUnit
+import kotlin.time.Duration
+import kotlin.time.toJavaDuration
+
+class SyncRunWorkersScheduler(
+    private val context: Context,
+    private val pendingSyncDao: RunPendingSyncDao,
+    private val sessionStorage: SessionStorage,
+    private val appDispatchers: AppDispatchers,
+    private val applicationScope: CoroutineScope
+) : SyncRunScheduler {
+
+    private val workManager = WorkManager.getInstance(context)
+
+    override suspend fun scheduleSync(type: SyncRunScheduler.SyncType) {
+        when (type) {
+            is SyncRunScheduler.SyncType.FetchRuns -> scheduleFetchRunsWorker(type.interval)
+            is SyncRunScheduler.SyncType.DeleteRun -> scheduleDeleteRunWorker(type.runId)
+            is SyncRunScheduler.SyncType.CreateRun -> scheduleCreateRunWorker(
+                type.run,
+                type.mapPictureBytes
+            )
+        }
+    }
+
+    private suspend fun scheduleDeleteRunWorker(runId: RunId) {
+        val userId = sessionStorage.get()?.userId ?: return
+        val entity = DeletedRunSyncEntity(
+            runId = runId,
+            userId = userId
+        )
+        pendingSyncDao.upsertDeletedRunSyncEntity(entity)
+
+        val workRequest = OneTimeWorkRequestBuilder<DeleteRunWorker>()
+            .addTag(DELETE_WORKER_TAG)
+            .setConstraints(
+                Constraints.Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build()
+            )
+            .setBackoffCriteria(
+                backoffPolicy = BackoffPolicy.EXPONENTIAL,
+                backoffDelay = 2000L,
+                timeUnit = TimeUnit.MILLISECONDS
+            )
+            .setInputData(
+                Data.Builder()
+                    .putString(DeleteRunWorker.RUN_ID, entity.runId)
+                    .build()
+            )
+            .build()
+
+        applicationScope.launch {
+            workManager.enqueue(workRequest).await()
+        }.join()
+    }
+
+    private suspend fun scheduleCreateRunWorker(run: Run, mapPictureBytes: ByteArray) {
+        val userId = sessionStorage.get()?.userId ?: return
+        val pendingRun = RunPendingSyncEntity(
+            run = run.toRunEntity(),
+            mapPictureUrl = mapPictureBytes,
+            userId = userId
+        )
+        pendingSyncDao.upsertRunPendingSyncEntity(pendingRun)
+        val workRequest = OneTimeWorkRequestBuilder<CreateRunWorker>()
+            .addTag(CREATE_WORKER_TAG)
+            .setConstraints(
+                Constraints.Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build()
+            )
+            .setBackoffCriteria(
+                backoffPolicy = BackoffPolicy.EXPONENTIAL,
+                backoffDelay = 2000L,
+                timeUnit = TimeUnit.MILLISECONDS
+            )
+            .setInputData(
+                Data.Builder()
+                    .putString(CreateRunWorker.RUN_ID, pendingRun.runId)
+                    .build()
+            )
+            .build()
+
+        applicationScope.launch {
+            workManager.enqueue(workRequest).await()
+        }.join()
+    }
+
+    private suspend fun scheduleFetchRunsWorker(interval: Duration) {
+        val isSyncScheduled = withContext(appDispatchers.ioDispatcher) {
+            workManager
+                .getWorkInfosByTag(FETCH_WORKER_TAG)
+                .get()
+                .isNotEmpty()
+        }
+
+        if (isSyncScheduled) {
+            return
+        }
+
+        val workRequest =
+            PeriodicWorkRequestBuilder<FetchRunsWorker>(repeatInterval = interval.toJavaDuration())
+                .setConstraints(
+                    Constraints.Builder()
+                        .setRequiredNetworkType(NetworkType.CONNECTED)
+                        .build()
+                )
+                .setBackoffCriteria(
+                    backoffPolicy = BackoffPolicy.EXPONENTIAL,
+                    backoffDelay = 2000L,
+                    timeUnit = TimeUnit.MILLISECONDS
+                )
+                .setInitialDelay(
+                    duration = 30,
+                    timeUnit = TimeUnit.MINUTES
+                )
+                .addTag(FETCH_WORKER_TAG)
+                .build()
+
+        workManager.enqueue(workRequest).await()
+    }
+
+    override suspend fun cancelAllSyncs() {
+        workManager.cancelAllWork().await()
+    }
+
+    companion object {
+        const val FETCH_WORKER_TAG = "fetch_worker_tag"
+        const val CREATE_WORKER_TAG = "create_worker_tag"
+        const val DELETE_WORKER_TAG = "delete_worker_tag"
+    }
+}

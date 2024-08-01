@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.core.domain.run.SyncRunScheduler
 import com.example.run.domain.usecase.DeleteRunUseCase
 import com.example.run.domain.usecase.FetchRunsUseCase
 import com.example.run.domain.usecase.GetRunsUseCase
@@ -15,12 +16,14 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.minutes
 
 class RunOverviewViewModel(
     private val getRunsUseCase: GetRunsUseCase,
     private val fetchRunsUseCase: FetchRunsUseCase,
     private val deleteRunUseCase: DeleteRunUseCase,
     private val syncPendingRunsUseCase: SyncPendingRunsUseCase,
+    private val syncRunScheduler: SyncRunScheduler
 ) : ViewModel() {
 
     var state by mutableStateOf(RunOverviewState())
@@ -30,6 +33,13 @@ class RunOverviewViewModel(
     val events = channelEvents.receiveAsFlow()
 
     init {
+
+        viewModelScope.launch {
+            syncRunScheduler.scheduleSync(
+                type = SyncRunScheduler.SyncType.FetchRuns(30.minutes)
+            )
+        }
+
         getRunsUseCase()
             .onEach { runs ->
                 val runsUi = runs.map { it.toRunUi() }
