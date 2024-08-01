@@ -8,6 +8,8 @@ import com.example.run.domain.usecase.FetchRunsUseCase
 import com.example.run.domain.usecase.FetchRunsUseCaseImpl
 import com.example.run.domain.usecase.GetRunsUseCase
 import com.example.run.domain.usecase.GetRunsUseCaseImpl
+import com.example.run.domain.usecase.SyncPendingRunsUseCase
+import com.example.run.domain.usecase.SyncPendingRunsUseCaseImpl
 import com.example.run.domain.usecase.UpsertRunUseCase
 import com.example.run.domain.usecase.UpsertRunUseCaseImpl
 import com.example.run.presentation.overview.RunOverviewViewModel
@@ -23,6 +25,7 @@ val runsPresentationModule = module {
     singleOf(::FetchRunsUseCaseImpl).bind<FetchRunsUseCase>()
     singleOf(::UpsertRunUseCaseImpl).bind<UpsertRunUseCase>()
     singleOf(::DeleteRunUseCaseImpl).bind<DeleteRunUseCase>()
+    singleOf(::SyncPendingRunsUseCaseImpl).bind<SyncPendingRunsUseCase>()
 
     viewModelOf(::RunOverviewViewModel)
     viewModelOf(::RunTrackingViewModel)

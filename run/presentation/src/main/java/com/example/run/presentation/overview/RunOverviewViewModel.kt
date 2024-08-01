@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.run.domain.usecase.DeleteRunUseCase
 import com.example.run.domain.usecase.FetchRunsUseCase
 import com.example.run.domain.usecase.GetRunsUseCase
+import com.example.run.domain.usecase.SyncPendingRunsUseCase
 import com.example.run.presentation.tracking.mapper.toRunUi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
@@ -18,7 +19,8 @@ import kotlinx.coroutines.launch
 class RunOverviewViewModel(
     private val getRunsUseCase: GetRunsUseCase,
     private val fetchRunsUseCase: FetchRunsUseCase,
-    private val deleteRunUseCase: DeleteRunUseCase
+    private val deleteRunUseCase: DeleteRunUseCase,
+    private val syncPendingRunsUseCase: SyncPendingRunsUseCase,
 ) : ViewModel() {
 
     var state by mutableStateOf(RunOverviewState())
@@ -34,6 +36,7 @@ class RunOverviewViewModel(
                 state = state.copy(runs = runsUi)
             }.launchIn(viewModelScope)
         viewModelScope.launch {
+            syncPendingRunsUseCase()
             fetchRunsUseCase()
         }
     }
