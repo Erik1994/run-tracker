@@ -7,4 +7,6 @@ sealed interface RunTrackingEvent {
     data class Error(val uiText: UiText) : RunTrackingEvent
 
     data object RunSuccessfullySaved : RunTrackingEvent
+
+    data object OnBackClick : RunTrackingEvent
 }

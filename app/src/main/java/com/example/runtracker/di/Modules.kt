@@ -17,6 +17,6 @@ object Modules {
         runsPresentationModule,
         locationModule,
         databaseModule,
-        networkModule
+        networkModule,
     )
 }

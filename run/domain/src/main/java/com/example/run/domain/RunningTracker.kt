@@ -35,6 +35,7 @@ interface RunningTracker {
     fun startObservingLocation()
     fun stopObservingLocation()
     fun setIsTracking(isTracking: Boolean)
+    fun finishRun()
 }
 
 class RunningTrackerImpl(
@@ -134,6 +135,13 @@ class RunningTrackerImpl(
 
     override fun stopObservingLocation() {
         isObservingLocation.value = false
+    }
+
+    override fun finishRun() {
+        stopObservingLocation()
+        setIsTracking(false)
+        _elapsedTime.value = Duration.ZERO
+        _ranData.value = RunData()
     }
 }
 

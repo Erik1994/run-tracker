@@ -22,4 +22,6 @@ sealed interface RunTrackingAction {
 
     data object DismissRationaleDialog : RunTrackingAction
 
+    class OnRunProcessed(val mapPictureBytes: ByteArray) : RunTrackingAction
+
 }

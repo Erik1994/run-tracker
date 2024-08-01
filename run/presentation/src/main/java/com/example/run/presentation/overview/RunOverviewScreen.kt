@@ -1,8 +1,14 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 
 package com.example.run.presentation.overview
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -10,6 +16,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -22,12 +29,16 @@ import com.example.core.presentation.desygnsystem.components.RunnersFAB
 import com.example.core.presentation.desygnsystem.components.RunnersScaffold
 import com.example.core.presentation.desygnsystem.components.toolbar.DropDownItem
 import com.example.core.presentation.desygnsystem.components.toolbar.RunnersToolbar
+import com.example.core.presentation.desygnsystem.dimentions.LocalDimensions
 import com.example.run.presentation.R
+import com.example.run.presentation.tracking.components.RunListItem
 
 @Composable
 fun RunOverviewScreen(
+    state: RunOverviewState,
     onAction: (RunOverviewAction) -> Unit
 ) {
+    val dimensions = LocalDimensions.current
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(
         state = topAppBarState
@@ -72,7 +83,26 @@ fun RunOverviewScreen(
             )
         }
     ) { padding ->
-
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+                .padding(horizontal = dimensions.dimenMedium),
+            contentPadding = padding,
+            verticalArrangement = Arrangement.spacedBy(dimensions.dimenMedium)
+        ) {
+            items(
+                items = state.runs,
+                key = { it.id }
+            ) {
+                RunListItem(
+                    onDeleteClick = { onAction(RunOverviewAction.DeleteRun(it)) },
+                    runUi = it,
+                    modifier = Modifier
+                        .animateItemPlacement()
+                )
+            }
+        }
     }
 }
 
@@ -81,6 +111,9 @@ fun RunOverviewScreen(
 @Composable
 fun RunOverviewScreenPreview() {
     RunnersTheme {
-        RunOverviewScreen(onAction = {})
+        RunOverviewScreen(
+            state = RunOverviewState(),
+            onAction = {}
+        )
     }
 }

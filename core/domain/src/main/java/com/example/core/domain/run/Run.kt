@@ -16,5 +16,5 @@ data class Run(
     val mapPictureUrl: String?
 ) {
     val avgSpeedKmh: Double
-        get() = (distanceInMeters / 1000.0) / duration.toInt(DurationUnit.HOURS)
+        get() = (distanceInMeters / 1000.0) / duration.toDouble(DurationUnit.HOURS)
 }

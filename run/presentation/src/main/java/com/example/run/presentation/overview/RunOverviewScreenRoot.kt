@@ -15,6 +15,7 @@ fun RunOverviewScreenRoot(
         }
     }
     RunOverviewScreen(
+        viewModel.state,
         onAction = viewModel::onAction
     )
 }
