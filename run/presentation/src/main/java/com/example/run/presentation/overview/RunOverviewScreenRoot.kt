@@ -7,11 +7,13 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun RunOverviewScreenRoot(
     onStartRunClick: () -> Unit,
+    onLogOutClick: () -> Unit,
     viewModel: RunOverviewViewModel = koinViewModel(),
 ) {
     ObserveAsEvents(flow = viewModel.events) { event ->
         when (event) {
-            is RunOverviewEvent.RunTrackingNavigation -> onStartRunClick()
+            is RunOverviewEvent.RunTrackingNavigationEvent -> onStartRunClick()
+            is RunOverviewEvent.AuthNavigationEvent -> onStartRunClick()
         }
     }
     RunOverviewScreen(

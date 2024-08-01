@@ -1,5 +1,7 @@
 package com.example.core.data.run
 
+import com.example.core.data.network.Endpoint
+import com.example.core.data.network.get
 import com.example.core.database.dao.RunPendingSyncDao
 import com.example.core.database.mapper.toRun
 import com.example.core.domain.auth.SessionStorage
@@ -14,6 +16,10 @@ import com.example.core.domain.util.DataError
 import com.example.core.domain.util.EmptyResult
 import com.example.core.domain.util.Result
 import com.example.core.domain.util.asEmptyDataResult
+import io.ktor.client.HttpClient
+import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.providers.BearerAuthProvider
+import io.ktor.client.plugins.plugin
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
@@ -28,7 +34,8 @@ class OfflineFirstRunRepository(
     private val runPendingSyncDao: RunPendingSyncDao,
     private val sessionStorage: SessionStorage,
     private val appDispatchers: AppDispatchers,
-    private val syncRunScheduler: SyncRunScheduler
+    private val syncRunScheduler: SyncRunScheduler,
+    private val client: HttpClient
 ) : RunRepository {
     override fun getRuns(): Flow<List<Run>> {
         return localRunDataSource.getRuns()
@@ -139,5 +146,21 @@ class OfflineFirstRunRepository(
             createJobs.joinAll()
             deleteJobs.joinAll()
         }
+    }
+
+    override suspend fun logOut(): EmptyResult<DataError.Network> {
+        val result = client.get<Unit>(
+            endpoint = Endpoint.LogOut
+        ).asEmptyDataResult()
+
+        client.plugin(Auth).providers.filterIsInstance<BearerAuthProvider>()
+            .firstOrNull()
+            ?.clearToken()
+
+        return result
+    }
+
+    override suspend fun deleteAllRuns() {
+        localRunDataSource.deleteAllRuns()
     }
 }
