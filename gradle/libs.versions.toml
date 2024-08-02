@@ -120,6 +120,7 @@ run-tracker-android-library = { id = "run.tracker.android.library", version = "u
 run-tracker-android-library-compose = { id = "run.tracker.android.library.compose", version = "unspecified" }
 run-tracker-android-feature-ui = { id = "run.tracker.android.feature.ui", version = "unspecified" }
 run-tracker-android-room = { id = "run.tracker.android.room", version = "unspecified" }
+run-tracker-android-dynamic-feature = { id = "run.tracker.android.dynamic.feature", version = "unspecified" }
 run-tracker-jvm-library = { id = "run.tracker.jvm.library", version = "unspecified" }
 run-tracker-jvm-ktor = { id = "run.tracker.jvm.ktor", version = "unspecified" }
 compose-compailer = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin"}
