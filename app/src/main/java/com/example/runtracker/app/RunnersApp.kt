@@ -1,8 +1,10 @@
 package com.example.runtracker.app
 
 import android.app.Application
+import android.content.Context
 import com.example.runtracker.BuildConfig
 import com.example.runtracker.di.Modules
+import com.google.android.play.core.splitcompat.SplitCompat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import org.koin.android.ext.koin.androidContext
@@ -25,5 +27,10 @@ class RunnersApp : Application() {
             workManagerFactory()
             modules(*Modules.modules)
         }
+    }
+
+    override fun attachBaseContext(base: Context?) {
+        super.attachBaseContext(base)
+        SplitCompat.installActivity(this)
     }
 }

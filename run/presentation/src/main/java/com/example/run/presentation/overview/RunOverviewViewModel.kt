@@ -53,6 +53,7 @@ class RunOverviewViewModel(
                 val runsUi = runs.map { it.toRunUi() }
                 state = state.copy(runs = runsUi)
             }.launchIn(viewModelScope)
+
         viewModelScope.launch {
             syncPendingRunsUseCase()
             fetchRunsUseCase()
@@ -61,7 +62,7 @@ class RunOverviewViewModel(
 
     fun onAction(action: RunOverviewAction) {
         when (action) {
-            RunOverviewAction.OnAnalyticsClick -> {}
+            RunOverviewAction.OnAnalyticsClick -> handleEvent(RunOverviewEvent.AnalyticsNavigationEvent)
             RunOverviewAction.OnLogoutClick -> {
                 logOut()
                 handleEvent(RunOverviewEvent.AuthNavigationEvent)

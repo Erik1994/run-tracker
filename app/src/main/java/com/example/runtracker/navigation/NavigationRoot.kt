@@ -20,14 +20,18 @@ import com.example.runtracker.MainActivity
 @Composable
 fun NavigationRoot(
     navController: NavHostController,
-    isLoggedIn: Boolean
+    isLoggedIn: Boolean,
+    onAnalyticsClick: () -> Unit
 ) {
     NavHost(
         navController = navController,
         startDestination = if (isLoggedIn) Route.RUN else Route.AUTH
     ) {
-        authGraph(navController)
-        runGraph(navController)
+        authGraph(navController = navController)
+        runGraph(
+            navController = navController,
+            onAnalyticsClick = onAnalyticsClick
+        )
     }
 }
 
@@ -79,7 +83,10 @@ private fun NavGraphBuilder.authGraph(navController: NavHostController) {
     }
 }
 
-private fun NavGraphBuilder.runGraph(navController: NavHostController) {
+private fun NavGraphBuilder.runGraph(
+    navController: NavHostController,
+    onAnalyticsClick: () -> Unit
+) {
     navigation(
         startDestination = Route.RUN_OVERVIEW,
         route = Route.RUN
@@ -95,7 +102,8 @@ private fun NavGraphBuilder.runGraph(navController: NavHostController) {
                             inclusive = true
                         }
                     }
-                }
+                },
+                onAnalyticsClick = onAnalyticsClick
             )
         }
         composable(

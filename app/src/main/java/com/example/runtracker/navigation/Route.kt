@@ -8,4 +8,5 @@ object Route {
     const val RUN = "run"
     const val RUN_OVERVIEW = "run_overview"
     const val RUN_TRACKING = "run_tracking"
+    const val ANALYTICS_DASHBOARD = "analytics_dashboard"
 }

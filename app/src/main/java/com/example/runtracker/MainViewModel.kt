@@ -26,6 +26,15 @@ class MainViewModel(
         }
     }
 
+
+    fun setAnalyticsDialogVisibility(isVisible: Boolean) {
+        state = state.copy(showAnalyticsInstallDialog = isVisible)
+    }
+
+    fun updateAnalyticsFeatureModuleState(analyticsModuleState: String) {
+        state = state.copy(analyticsFeatureModuleState = analyticsModuleState)
+    }
+
     private companion object {
         const val SPLASH_SCREEN_DURATION = 500L
     }
