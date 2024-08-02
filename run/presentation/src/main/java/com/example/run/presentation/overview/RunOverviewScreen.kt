@@ -31,7 +31,7 @@ import com.example.core.presentation.desygnsystem.components.toolbar.DropDownIte
 import com.example.core.presentation.desygnsystem.components.toolbar.RunnersToolbar
 import com.example.core.presentation.desygnsystem.dimentions.LocalDimensions
 import com.example.run.presentation.R
-import com.example.run.presentation.tracking.components.RunListItem
+import com.example.run.presentation.overview.components.RunListItem
 
 @Composable
 fun RunOverviewScreen(

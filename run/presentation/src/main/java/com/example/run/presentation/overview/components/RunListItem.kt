@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 
-package com.example.run.presentation.tracking.components
+package com.example.run.presentation.overview.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -84,7 +84,7 @@ fun RunListItem(
                 .padding(dimensions.dimenMedium),
             verticalArrangement = Arrangement.spacedBy(dimensions.dimenMedium)
         ) {
-            MapImage(imageUrl = null)
+            MapImage(imageUrl = runUi.mapPictureUrl)
             RunningTimeSection(
                 duration = runUi.duration,
                 modifier = Modifier.fillMaxWidth()

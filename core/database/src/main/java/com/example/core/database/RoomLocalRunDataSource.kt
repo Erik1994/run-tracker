@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalCoroutinesApi::class)
+
 package com.example.core.database
 
 import android.database.sqlite.SQLiteFullException
@@ -9,6 +11,7 @@ import com.example.core.domain.run.Run
 import com.example.core.domain.run.RunId
 import com.example.core.domain.util.DataError
 import com.example.core.domain.util.Result
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -25,9 +28,9 @@ class RoomLocalRunDataSource(
 
     override suspend fun upsertRun(run: Run): Result<RunId, DataError.Local> {
         return try {
-            val entiy = run.toRunEntity()
+            val entity = run.toRunEntity()
             runDao.upsertRun(run.toRunEntity())
-            Result.Success(entiy.id)
+            Result.Success(entity.id)
         } catch (e: SQLiteFullException) {
             Result.Error(DataError.Local.DISK_FULL)
         }

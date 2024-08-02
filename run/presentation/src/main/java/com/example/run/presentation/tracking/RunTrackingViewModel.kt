@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -178,6 +179,7 @@ class RunTrackingViewModel(
             )
             runningTracker.finishRun()
 
+            Timber.tag("MAP_PICTURE").d("byteArr: $mapPictureBytes")
             when (val result = upsertRunUseCase(run = run, mapPicture = mapPictureBytes)) {
                 is Result.Error -> eventChannel.send(RunTrackingEvent.Error(result.error.asUiText()))
                 is Result.Success -> eventChannel.send(RunTrackingEvent.RunSuccessfullySaved)

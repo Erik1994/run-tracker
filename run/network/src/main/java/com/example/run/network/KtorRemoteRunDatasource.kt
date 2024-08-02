@@ -19,9 +19,8 @@ import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
-import io.ktor.util.InternalAPI
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.encodeToJsonElement
 
 class KtorRemoteRunDatasource(
     private val httpClient: HttpClient
@@ -34,16 +33,15 @@ class KtorRemoteRunDatasource(
         }
     }
 
-    @OptIn(InternalAPI::class)
     override suspend fun postRun(run: Run, mapPicture: ByteArray): Result<Run, DataError.Network> {
-        val createRunRequestJson = Json.encodeToJsonElement(run.toCreateRunRequest())
+        val createRunRequestJson = Json.encodeToString(run.toCreateRunRequest())
         val result = safeCall<RunDto> {
             httpClient.submitFormWithBinaryData(
                 url = Endpoint.Run.url,
                 formData = formData {
                     append("MAP_PICTURE", mapPicture, Headers.build {
                         append(HttpHeaders.ContentType, "image/jpeg")
-                        append(HttpHeaders.ContentDisposition, "filename=runpicture.jpg")
+                        append(HttpHeaders.ContentDisposition, "filename=mappicture.jpg")
                     })
                     append("RUN_DATA", createRunRequestJson, Headers.build {
                         append(HttpHeaders.ContentType, "text/plain")

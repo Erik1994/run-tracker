@@ -13,7 +13,7 @@ fun RunOverviewScreenRoot(
     ObserveAsEvents(flow = viewModel.events) { event ->
         when (event) {
             is RunOverviewEvent.RunTrackingNavigationEvent -> onStartRunClick()
-            is RunOverviewEvent.AuthNavigationEvent -> onStartRunClick()
+            is RunOverviewEvent.AuthNavigationEvent -> onLogOutClick()
         }
     }
     RunOverviewScreen(

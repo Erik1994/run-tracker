@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.bson.types.ObjectId
 
 class OfflineFirstRunRepository(
     private val localRunDataSource: LocalRunDataSource,
@@ -51,12 +52,12 @@ class OfflineFirstRunRepository(
     }
 
     override suspend fun upsertRun(run: Run, mapPicture: ByteArray): EmptyResult<DataError> {
-        val localResult = localRunDataSource.upsertRun(run)
-        if (localResult !is Result.Success) {
-            return localResult.asEmptyDataResult()
-        }
+//        val localResult = localRunDataSource.upsertRun(run)
+//        if (localResult !is Result.Success) {
+//            return localResult.asEmptyDataResult()
+//        }
 
-        val runWithId = run.copy(id = localResult.data)
+        val runWithId = run.copy(id = ObjectId().toHexString())
         val remoteResult = remoteRunDataSource.postRun(
             run = runWithId,
             mapPicture = mapPicture
@@ -121,7 +122,7 @@ class OfflineFirstRunRepository(
                 .map { pendingRun ->
                     launch {
                         val run = pendingRun.run.toRun()
-                        when (remoteRunDataSource.postRun(run, pendingRun.mapPictureUrl)) {
+                        when (remoteRunDataSource.postRun(run, pendingRun.mapPictureBytes)) {
                             is Result.Error -> Unit
                             is Result.Success -> applicationScope.launch {
                                 runPendingSyncDao.deleteRunPendingSynEntity(pendingRun.runId)

@@ -23,7 +23,7 @@ class CreateRunWorker(
             pendingSyncDao.getRunPendingSyncEntity(pendingRunId) ?: return Result.failure()
         val run = pendingRunEntity.run.toRun()
         return when (val result =
-            remoteRunDataSource.postRun(run, pendingRunEntity.mapPictureUrl)) {
+            remoteRunDataSource.postRun(run, pendingRunEntity.mapPictureBytes)) {
             is com.example.core.domain.util.Result.Error -> result.error.toWorkerResult()
             is com.example.core.domain.util.Result.Success -> {
                 pendingSyncDao.deleteRunPendingSynEntity(pendingRunId)

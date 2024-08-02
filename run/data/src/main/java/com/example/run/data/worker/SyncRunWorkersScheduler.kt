@@ -82,7 +82,7 @@ class SyncRunWorkersScheduler(
         val userId = sessionStorage.get()?.userId ?: return
         val pendingRun = RunPendingSyncEntity(
             run = run.toRunEntity(),
-            mapPictureUrl = mapPictureBytes,
+            mapPictureBytes = mapPictureBytes,
             userId = userId
         )
         pendingSyncDao.upsertRunPendingSyncEntity(pendingRun)
