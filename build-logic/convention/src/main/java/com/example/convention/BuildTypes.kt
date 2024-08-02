@@ -67,6 +67,7 @@ internal fun Project.configureBuildTypes(
                                 apiKey = apiKey,
                                 commonExtension = this@run
                             )
+                            isMinifyEnabled = false
                         }
                     }
                 }
