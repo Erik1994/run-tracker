@@ -14,6 +14,7 @@ import com.example.core.domain.util.Result
 import com.example.presentation.ui.asUiText
 import com.example.run.domain.LocationDataCalculator
 import com.example.run.domain.RunningTracker
+import com.example.run.domain.WatchConnector
 import com.example.run.domain.usecase.UpsertRunUseCase
 import com.example.run.presentation.tracking.service.RunTrackingService
 import kotlinx.coroutines.channels.Channel
@@ -35,6 +36,7 @@ class RunTrackingViewModel(
     private val runningTracker: RunningTracker,
     private val upsertRunUseCase: UpsertRunUseCase,
     private val appDispatchers: AppDispatchers,
+    private val watchConnector: WatchConnector
 ) : ViewModel() {
 
     var state by mutableStateOf(
