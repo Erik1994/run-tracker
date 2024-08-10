@@ -28,14 +28,14 @@ class PhoneToWatchConnector(
     nodeDiscovery: NodeDiscovery,
     applicationScope: CoroutineScope,
     private val messagingClient: MessagingClient
-): WatchConnector {
+) : WatchConnector {
 
     private val isTrackable = MutableStateFlow(false)
     private val _connectedNode = MutableStateFlow<DeviceNode?>(null)
 
     override val connectedDevice: StateFlow<DeviceNode?> = _connectedNode.asStateFlow()
 
-    override val messagingActions:Flow<MessagingAction> = nodeDiscovery
+    override val messagingActions: Flow<MessagingAction> = nodeDiscovery
         .observeConnectedDevices(DeviceType.PHONE)
         .flatMapLatest { connectedDevices ->
             val node = connectedDevices.firstOrNull()
@@ -44,7 +44,7 @@ class PhoneToWatchConnector(
                 messagingClient.connectToNode(node.id)
             } else flowOf()
         }
-        .onEach { messagingAction ->  
+        .onEach { messagingAction ->
             if (messagingAction == MessagingAction.ConnectionRequest) {
                 if (isTrackable.value) {
                     sendActionToWatch(MessagingAction.Trackable)

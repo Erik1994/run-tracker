@@ -30,11 +30,13 @@ class WearNodeDiscovery(
                 val capability = capabilityClient
                     .getCapability(remoteCapability, CapabilityClient.FILTER_REACHABLE)
                     .await()
-                val connectedDevices = capability.nodes
-                    .map {
-                        it.toDeviceNode()
-                    }.toSet()
-                send(connectedDevices)
+                capability?.let { safeCapability ->
+                    val connectedDevices = safeCapability.nodes
+                        .map {
+                            it.toDeviceNode()
+                        }.toSet()
+                    send(connectedDevices)
+                }
             } catch (e: ApiException) {
                 awaitClose()
                 return@callbackFlow

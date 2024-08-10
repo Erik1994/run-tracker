@@ -27,7 +27,7 @@ import com.example.core.domain.util.EmptyResult
 import com.example.core.domain.util.Result
 import com.example.wear.run.domain.ExerciseError
 import com.example.wear.run.domain.ExerciseTracker
-import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -36,8 +36,7 @@ import kotlinx.coroutines.runBlocking
 import kotlin.math.roundToInt
 
 class HealthServicesExerciseTracker(
-    private val context: Context,
-    private val ioDispatcher: CoroutineDispatcher
+    private val context: Context
 ) : ExerciseTracker {
 
     private val client = HealthServices.getClient(context).exerciseClient
@@ -73,7 +72,7 @@ class HealthServicesExerciseTracker(
                     client.clearUpdateCallback(callback)
                 }
             }
-        }.flowOn(ioDispatcher)
+        }.flowOn(Dispatchers.IO)
 
     override suspend fun isHeartRateTrackingSupported(): Boolean {
         return hasBodySensorsPermission() && runCatching {
