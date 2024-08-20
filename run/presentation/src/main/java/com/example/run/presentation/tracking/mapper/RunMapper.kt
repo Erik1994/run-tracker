@@ -2,6 +2,7 @@ package com.example.run.presentation.tracking.mapper
 
 import com.example.core.domain.run.Run
 import com.example.presentation.ui.formatted
+import com.example.presentation.ui.toFormattedHeartRate
 import com.example.presentation.ui.toFormattedKm
 import com.example.presentation.ui.toFormattedKmh
 import com.example.presentation.ui.toFormattedMeters
@@ -27,6 +28,8 @@ fun Run.toRunUi(): RunUi {
         maxSpeed = avgSpeedKmh.toFormattedKmh(),
         pace = duration.toFormattedPace(distanceKm),
         totalElevation = totalElevationMeters.toFormattedMeters(),
-        mapPictureUrl = mapPictureUrl
+        mapPictureUrl = mapPictureUrl,
+        avgHeartRate = avgHeartRate.toFormattedHeartRate(),
+        maxHeartRate = maxHeartRate.toFormattedHeartRate()
     )
 }

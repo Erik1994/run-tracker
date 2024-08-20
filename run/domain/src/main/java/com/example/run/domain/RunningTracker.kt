@@ -4,6 +4,7 @@
 
 package com.example.run.domain
 
+import com.example.core.connectivity.domain.messaging.MessagingAction
 import com.example.core.domain.Timer
 import com.example.core.domain.location.LocationTimeStamp
 import com.example.core.domain.location.LocationWithAltitude
@@ -13,12 +14,17 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.combineTransform
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.runningFold
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.zip
@@ -40,7 +46,8 @@ interface RunningTracker {
 
 class RunningTrackerImpl(
     locationObserver: LocationObserver,
-    private val applicationScope: CoroutineScope
+    private val applicationScope: CoroutineScope,
+    private val watchConnector: WatchConnector
 ) : RunningTracker {
 
     private val _ranData = MutableStateFlow(RunData())
@@ -52,6 +59,23 @@ class RunningTrackerImpl(
 
     private val _elapsedTime = MutableStateFlow(Duration.ZERO)
     override val elapsedTime = _elapsedTime.asStateFlow()
+
+    private val heartRates = isTracking
+        .flatMapLatest { isTracking ->
+            if (isTracking) {
+                watchConnector.messagingActions
+            } else flowOf()
+        }
+        .filterIsInstance<MessagingAction.HeartRateUpdate>()
+        .map { it.heartRate }
+        .runningFold(initial = emptyList<Int>()) { currentHeartRates, newHeartRate ->
+            currentHeartRates + newHeartRate
+        }
+        .stateIn(
+            applicationScope,
+            SharingStarted.Lazily,
+            emptyList()
+        )
 
     override val currentLocation = isObservingLocation
         .flatMapLatest {
@@ -99,13 +123,14 @@ class RunningTrackerImpl(
                     location = location,
                     durationTimestamp = elapsedTime
                 )
-            }.onEach { location ->
+            }.combine(heartRates) { location, heartRates ->
                 val currentLocations = _ranData.value.locations
                 val lastLocationsList = if (currentLocations.isNotEmpty()) {
                     currentLocations.last() + location
                 } else listOf(location)
                 val newLocationsList = currentLocations.replaceLast(lastLocationsList)
-                val distanceMeters = LocationDataCalculator.getTotalDistanceMeters(locations = newLocationsList)
+                val distanceMeters =
+                    LocationDataCalculator.getTotalDistanceMeters(locations = newLocationsList)
 
                 val distanceKm = distanceMeters / 1000.0
                 val currentDuration = location.durationTimestamp
@@ -120,21 +145,39 @@ class RunningTrackerImpl(
                     RunData(
                         distanceMeters = distanceMeters,
                         pace = avgSecondsPerKm.seconds,
-                        locations = newLocationsList
+                        locations = newLocationsList,
+                        heartRates = heartRates
                     )
                 }
             }.launchIn(applicationScope)
+
+        elapsedTime
+            .onEach {
+                watchConnector.sendActionToWatch(MessagingAction.TimeUpdate(it))
+            }
+            .launchIn(applicationScope)
+
+        runData
+            .map { it.distanceMeters }
+            .distinctUntilChanged()
+            .onEach {
+                watchConnector.sendActionToWatch(MessagingAction.DistanceUpdate(it))
+            }
+            .launchIn(applicationScope)
     }
 
     override fun setIsTracking(isTracking: Boolean) {
         this._isTracking.value = isTracking
     }
+
     override fun startObservingLocation() {
         isObservingLocation.value = true
+        watchConnector.setIsTrackable(true)
     }
 
     override fun stopObservingLocation() {
         isObservingLocation.value = false
+        watchConnector.setIsTrackable(false)
     }
 
     override fun finishRun() {
