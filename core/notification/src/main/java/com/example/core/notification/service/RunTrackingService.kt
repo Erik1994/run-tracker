@@ -1,4 +1,4 @@
-package com.example.run.presentation.tracking.service
+package com.example.core.notification.service
 
 import android.app.PendingIntent
 import android.app.Service
@@ -8,25 +8,29 @@ import android.os.IBinder
 import androidx.core.app.TaskStackBuilder
 import androidx.core.net.toUri
 import com.example.core.domain.dispatchers.AppDispatchers
+import com.example.core.notification.notoification.NotificationManager
+import com.example.core.notification.notoification.NotificationManagerImpl
 import com.example.core.presentation.desygnsystem.R
 import com.example.presentation.ui.formatted
-import com.example.run.domain.RunningTracker
-import com.example.run.presentation.tracking.notoification.NotificationManagerImpl
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koin.android.ext.android.inject
 import org.koin.core.qualifier.named
+import kotlin.time.Duration
 
 class RunTrackingService : Service() {
 
     private val dispatcher by inject<CoroutineDispatcher>(named(AppDispatchers.DISPATCHER_UI))
     private var serviceScope: CoroutineScope? = null
-    private val runningTracker by inject<RunningTracker>()
-    private val runnersNotificationManager: com.example.run.presentation.tracking.notoification.NotificationManager by lazy {
+    private val elapsedTime by inject<StateFlow<Duration>>()
+    private val runnersNotificationManager: NotificationManager by lazy {
         NotificationManagerImpl(context = applicationContext)
     }
 
@@ -47,8 +51,8 @@ class RunTrackingService : Service() {
     }
 
     private fun start(activityClass: Class<*>) {
-        if (isServiceActive.not()) {
-            isServiceActive = true
+        if (isServiceActive.value.not()) {
+            _isServiceActive.value = true
 
             val activityIntent = Intent(applicationContext, activityClass).apply {
                 data = RUNNERS_DEEP_LINK.toUri()
@@ -60,7 +64,7 @@ class RunTrackingService : Service() {
             }
 
             runnersNotificationManager.showNotification(
-                title = getString(com.example.run.presentation.R.string.runners),
+                title = getString(R.string.runners),
                 smallIcon = R.drawable.logo,
                 pendingIntent = pendingIntent,
                 startService = {
@@ -73,10 +77,10 @@ class RunTrackingService : Service() {
 
     private fun updateNotification() {
         serviceScope?.let {
-            runningTracker.elapsedTime
+            elapsedTime
                 .onEach { elapsedTime ->
                     runnersNotificationManager.showNotification(
-                        title = getString(com.example.run.presentation.R.string.runners),
+                        title = getString(R.string.runners),
                         smallIcon = R.drawable.logo,
                         description = elapsedTime.formatted()
                     )
@@ -87,7 +91,7 @@ class RunTrackingService : Service() {
 
     private fun stop() {
         stopSelf()
-        isServiceActive = false
+        _isServiceActive.value = false
         serviceScope?.cancel()
         serviceScope = null
     }
@@ -98,7 +102,8 @@ class RunTrackingService : Service() {
 
     companion object {
         private const val EXTRA_ACTIVITY_CLASS = "extra_activity_class"
-        var isServiceActive = false
+        private val _isServiceActive = MutableStateFlow(false)
+        val isServiceActive = _isServiceActive.asStateFlow()
         const val RUNNERS_DEEP_LINK = "runners://run_tracking"
         const val ACTION_START = "action_start"
         const val ACTION_STOP = "action_stop"

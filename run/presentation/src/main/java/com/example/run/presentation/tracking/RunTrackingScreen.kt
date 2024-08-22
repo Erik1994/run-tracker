@@ -18,11 +18,14 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.core.notification.service.RunTrackingService
 import com.example.core.presentation.desygnsystem.RunnersTheme
 import com.example.core.presentation.desygnsystem.StartIcon
 import com.example.core.presentation.desygnsystem.StopIcon
@@ -36,7 +39,6 @@ import com.example.core.presentation.desygnsystem.dimentions.LocalDimensions
 import com.example.run.presentation.R
 import com.example.run.presentation.tracking.components.RunDataCard
 import com.example.run.presentation.tracking.maps.TrackerMap
-import com.example.run.presentation.tracking.service.RunTrackingService
 import com.example.run.presentation.util.hasLocationPermission
 import com.example.run.presentation.util.hasNotificationPermission
 import com.example.run.presentation.util.shouldShowLocationPermissionRationale
@@ -111,8 +113,9 @@ fun RunTrackingScreen(
         }
     }
 
+    val isServiceActive by RunTrackingService.isServiceActive.collectAsStateWithLifecycle()
     LaunchedEffect(key1 = state.shouldTrack) {
-        if (context.hasLocationPermission() && state.shouldTrack && RunTrackingService.isServiceActive.not()) {
+        if (context.hasLocationPermission() && state.shouldTrack && isServiceActive.not()) {
             onServiceToggle(RunTrackingService.RunTrackingServiceState.START)
         }
     }

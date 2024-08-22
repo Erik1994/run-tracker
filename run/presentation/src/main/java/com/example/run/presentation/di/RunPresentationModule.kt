@@ -27,6 +27,9 @@ import org.koin.dsl.module
 
 val runsPresentationModule = module {
     singleOf(::RunningTrackerImpl).bind<RunningTracker>()
+    single {
+        get<RunningTracker>().elapsedTime
+    }
     singleOf(::GetRunsUseCaseImpl).bind<GetRunsUseCase>()
     singleOf(::FetchRunsUseCaseImpl).bind<FetchRunsUseCase>()
     singleOf(::UpsertRunUseCaseImpl).bind<UpsertRunUseCase>()

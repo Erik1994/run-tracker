@@ -1,4 +1,4 @@
-package com.example.run.presentation.tracking.notoification
+package com.example.core.notification.notoification
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import com.example.core.notification.R
 
 interface NotificationManager {
     fun showNotification(
@@ -44,6 +45,7 @@ class NotificationManagerImpl(
                 .setSmallIcon(smallIcon)
                 .setContentText(description)
                 .setContentIntent(pendingIntent)
+                .setOnlyAlertOnce(true)
         }
         baseNotification?.let {
             val notification = it
@@ -58,8 +60,8 @@ class NotificationManagerImpl(
         if (Build.VERSION.SDK_INT >= 26) {
             val channel = NotificationChannel(
                 RUN_TRACKING_CHANNEL_ID,
-                context.getString(com.example.run.presentation.R.string.runners),
-                android.app.NotificationManager.IMPORTANCE_HIGH
+                context.getString(R.string.runners),
+                android.app.NotificationManager.IMPORTANCE_DEFAULT
             )
             notificationManager.createNotificationChannel(channel)
         }

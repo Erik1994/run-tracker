@@ -11,10 +11,10 @@ import androidx.navigation.navDeepLink
 import com.example.auth.presentation.intro.IntroScreenRoot
 import com.example.auth.presentation.login.LoginScreenRoot
 import com.example.auth.presentation.register.RegisterScreenRoot
+import com.example.core.notification.service.RunTrackingService
+import com.example.core.notification.service.RunTrackingService.Companion.RUNNERS_DEEP_LINK
 import com.example.run.presentation.overview.RunOverviewScreenRoot
 import com.example.run.presentation.tracking.RunTrackingScreenRoot
-import com.example.run.presentation.tracking.service.RunTrackingService
-import com.example.run.presentation.tracking.service.RunTrackingService.Companion.RUNNERS_DEEP_LINK
 import com.example.runtracker.MainActivity
 
 @Composable

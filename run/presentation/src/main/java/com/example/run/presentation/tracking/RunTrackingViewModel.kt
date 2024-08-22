@@ -12,12 +12,12 @@ import com.example.core.domain.dispatchers.AppDispatchers
 import com.example.core.domain.location.Location
 import com.example.core.domain.run.Run
 import com.example.core.domain.util.Result
+import com.example.core.notification.service.RunTrackingService
 import com.example.presentation.ui.asUiText
 import com.example.run.domain.LocationDataCalculator
 import com.example.run.domain.RunningTracker
 import com.example.run.domain.WatchConnector
 import com.example.run.domain.usecase.UpsertRunUseCase
-import com.example.run.presentation.tracking.service.RunTrackingService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,8 +45,8 @@ class RunTrackingViewModel(
 
     var state by mutableStateOf(
         RunTrackingState(
-            shouldTrack = RunTrackingService.isServiceActive && runningTracker.isTracking.value,
-            hasStartedRunning = RunTrackingService.isServiceActive
+            shouldTrack = RunTrackingService.isServiceActive.value && runningTracker.isTracking.value,
+            hasStartedRunning = RunTrackingService.isServiceActive.value
         )
     )
         private set
@@ -287,7 +287,7 @@ class RunTrackingViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        if (RunTrackingService.isServiceActive.not()) {
+        if (RunTrackingService.isServiceActive.value.not()) {
             applicationScope.launch {
                 watchConnector.sendActionToWatch(MessagingAction.Untrackable)
             }

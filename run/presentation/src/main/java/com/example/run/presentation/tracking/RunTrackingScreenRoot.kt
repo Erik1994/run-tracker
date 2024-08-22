@@ -3,8 +3,8 @@ package com.example.run.presentation.tracking
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import com.example.core.notification.service.RunTrackingService
 import com.example.presentation.ui.ObserveAsEvents
-import com.example.run.presentation.tracking.service.RunTrackingService
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

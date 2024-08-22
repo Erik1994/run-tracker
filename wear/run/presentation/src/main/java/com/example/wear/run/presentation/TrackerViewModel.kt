@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core.connectivity.domain.messaging.MessagingAction
 import com.example.core.domain.util.Result
+import com.example.core.notification.service.RunTrackingService
 import com.example.wear.run.domain.ExerciseTracker
 import com.example.wear.run.domain.PhoneConnector
 import com.example.wear.run.domain.RunningTracker
@@ -29,7 +30,13 @@ class TrackerViewModel(
     private val runningTracker: RunningTracker
 ) : ViewModel() {
 
-    var state by mutableStateOf(TrackerState())
+    var state by mutableStateOf(
+        TrackerState(
+            hasStartedRunning = RunTrackingService.isServiceActive.value,
+            isRunActive = RunTrackingService.isServiceActive.value && runningTracker.isTracking.value,
+            isTrackable = RunTrackingService.isServiceActive.value
+        )
+    )
         private set
 
     private val eventChannel = Channel<TrackerEvent>()
@@ -146,6 +153,7 @@ class TrackerViewModel(
                     )
                 }
             }
+
             TrackerAction.OnToggleRunClick -> {
                 if (state.isTrackable) {
                     state = state.copy(isRunActive = state.isRunActive.not())
@@ -156,13 +164,14 @@ class TrackerViewModel(
 
     private fun sendActionToPhone(action: TrackerAction) {
         viewModelScope.launch {
-            val messagingAction = when(action) {
+            val messagingAction = when (action) {
                 is TrackerAction.OnFinishRunClick -> MessagingAction.Finish
                 is TrackerAction.OnToggleRunClick -> {
                     if (state.isRunActive) {
                         MessagingAction.Pause
                     } else MessagingAction.StartOrResume
                 }
+
                 else -> null
             }
             messagingAction?.let {
@@ -178,24 +187,32 @@ class TrackerViewModel(
         phoneConnector
             .messagingActions
             .onEach { action ->
-                when(action) {
-                    MessagingAction.Finish -> onAction(TrackerAction.OnFinishRunClick, triggeredOnPhone = true)
+                when (action) {
+                    MessagingAction.Finish -> onAction(
+                        TrackerAction.OnFinishRunClick,
+                        triggeredOnPhone = true
+                    )
+
                     MessagingAction.Pause -> {
                         if (state.isTrackable) {
                             state = state.copy(isRunActive = false)
                         }
                     }
+
                     MessagingAction.StartOrResume -> {
                         if (state.isTrackable) {
                             state = state.copy(isRunActive = true)
                         }
                     }
+
                     MessagingAction.Trackable -> {
                         state = state.copy(isTrackable = true)
                     }
+
                     MessagingAction.Untrackable -> {
                         state = state.copy(isTrackable = false)
                     }
+
                     else -> Unit
                 }
             }

@@ -15,5 +15,6 @@ dependencies {
 
     implementation(projects.core.domain)
     implementation(projects.run.domain)
+    implementation(projects.core.notification)
     implementation(projects.core.connectivity.domain)
 }
